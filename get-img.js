@@ -66,6 +66,7 @@
         for (i = 0; i < pixels.length; i = i + 4)
         {
             var hsv = rgbToHsv(pixels[i], pixels[i + 1], pixels[i + 2]);
+            console.log(hsv);
             if (hsv['h'] > 0.44 && hsv['h'] < 0.55
                 && hsv['s'] > 0.2 && hsv['s'] < 0.8
                 && hsv['v'] > 0.2 && hsv['v'] < 0.8)
@@ -74,6 +75,7 @@
                 pixels[i+1] = 0;
                 pixels[i+2] = 0;
                 pixels[i+3] = 255;
+                console.log('bim');
             }
             else
             {
@@ -89,9 +91,12 @@
             console.log(pixels[i+2]);
         }*/
         
-        context.drawImage(image, 0, 0);
+        /*context.drawImage(image, 0, 0);
+        context.fillRect(0, 0, image.width, image.height);
         var img = document.createElement("img");
         img.src = canvas.toDataURL("image/png");
-        document.body.appendChild(img);
+        document.body.appendChild(img);*/
+
+        var imgData = document.getElementById('loveStacie').toDataURL();
     });
 })();
