@@ -95,4 +95,3 @@
         document.body.appendChild(img);
     });
 })();
-
