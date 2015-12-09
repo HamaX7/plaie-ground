@@ -22,7 +22,7 @@
         for (i = 0; i < pixels.length; i = i + 4)
         {
             var rgba = new Array();
-            rgba.push(pixels[i], pixels[i + 1], pixels[i + 2], pixels[i + 3]);
+            rgba.push(pixels[i], pixels[i + 1], pixels[i + 2]);
             rgbaPixels.push(rgba);
         }
     });
