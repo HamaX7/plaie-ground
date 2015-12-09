@@ -35,12 +35,35 @@ imgPlaie.onload = function(){
         }
     }
 
-	// copie le résultat 10px en-dessous de l'original
+    var grays = new Array();
+    // Avoir un tableau des valeurs grayscale de chaque pixel
+    for (i = 0; i < pixels.length; i = i + 4)
+    {
+        grays.push(pixels[i] * 0.299 + pixels[i + 1] * 0.587 + pixels[i + 2] * 0.114);
+    }
+
+    // Trouve les coins dans l'image
+    var corners = tracking.Fast.findCorners(grays, imgPlaie.width, imgPlaie.height, 100);
+
+    for (i = 0; i < corners.length; i = i + 2)
+    {
+        var k = (corners[i] * corners[i + 1] + corners[i]) * 4;
+        pixels[k] = 255;
+        pixels[k + 1] = 0;
+        pixels[k + 2] = 0;
+        pixels[k + 3] = 255;
+        //console.log(pixels[k]);
+        //console.log(pixels[k + 1]);
+        //console.log(pixels[k + 2]);
+    }
+
+    copie_imgPlaie.data = pixels;
+	// Copie le résultat en-dessous de l'original
     var copie = document.getElementById( "copie" );
     copie.width = imgPlaie.width;
     copie.height = imgPlaie.height;
     var ctxCopie = copie.getContext("2d");
-	ctxCopie.putImageData( copie_imgPlaie, 0, 0);
+	ctxCopie.putImageData(copie_imgPlaie, 0, 0);
 }
 
 function isOnePointZero(n) {
