@@ -39,7 +39,12 @@ function imgProcessing(imgName, copyName, fileName)
         pixels = pixelsColorProcessing(pixels, copie_imgPlaie.width);
 
         // Corners detection on copy
-        pixels = cornerDetection(pixels, copie_imgPlaie.width, copie_imgPlaie.height);
+        var corners = cornerDetection(pixels, copie_imgPlaie.width, copie_imgPlaie.height);
+
+        // Edges detection on copy
+        var edges = edgeDetection(pixels, copie_imgPlaie.width, copie_imgPlaie.height);
+
+        pixels = edges;
 
         // Set copy pixels with new pixels
         copie_imgPlaie.data = pixels;
@@ -49,7 +54,13 @@ function imgProcessing(imgName, copyName, fileName)
         copie.width = imgPlaie.width;
         copie.height = imgPlaie.height;
         var ctxCopie = copie.getContext("2d");
-        ctxCopie.putImageData(copie_imgPlaie, 0, 0);
+    	ctxCopie.putImageData(copie_imgPlaie, 0, 0);
+
+        // Print corners pixels
+        /*for (var i = 0; i < corners.length; i += 2) {
+            ctxCopie.fillStyle = '#61F600';
+            ctxCopie.fillRect(corners[i], corners[i + 1], 1, 1);
+        }*/
     }
 };
 /*
@@ -237,50 +248,6 @@ function pixelsColorProcessing(pixels, width)
                 }
             }
         }
-        /*
-            var color_sum = 0;
-            if (pixels[i] == 0)
-            {
-                if (i % (4 * width) == 0) { //left side
-                    color_sum += 
-                }
-                if (i % (4 * width - 1) == 0) { //right side
-                    color_sum += 
-                }
-                if (i < (4 * width)) { //top first line
-                    color_sum += 
-                }
-                if (i > (4 * width * (pixels.length / width))) { //last line
-                    color_sum += 
-                }
-                if (i < (4 * width)) {
-                    color_sum = pixels[i - 4]
-                                + pixels[i + 4]
-                                + pixels[i - (4 * width)]
-                                + pixels[i + (4 * width)]
-                                + pixels[i - (4 * width) - 4]
-                                + pixels[i - (4 * width) + 4]
-                                + pixels[i + (4 * width) - 4]
-                                + pixels[i + (4 * width) + 4];
-                }
-                else {
-                    color_sum = pixels[i - 4]
-                                + pixels[i + 4]
-                                + pixels[i - (4 * width)]
-                                + pixels[i + (4 * width)]
-                                + pixels[i - (4 * width) - 4]
-                                + pixels[i - (4 * width) + 4]
-                                + pixels[i + (4 * width) - 4]
-                                + pixels[i + (4 * width) + 4];
-                }
-                if (color_sum != 0)
-                {
-                    pixels[i] = 0;
-                    pixels[i+1] = 255;
-                    pixels[i+2] = 0;
-                    pixels[i+3] = 255;
-                }
-            }*/
     }
 
     var countBlue = 0;
@@ -315,26 +282,23 @@ function pixelsColorProcessing(pixels, width)
 */
 function cornerDetection(pixels, width, height)
 {
-    var grays = new Array();
-
-    // Avoir un tableau des valeurs grayscale de chaque pixel
-    for (i = 0; i < pixels.length; i = i + 4)
-    {
-        grays.push(pixels[i] * 0.299 + pixels[i + 1] * 0.587 + pixels[i + 2] * 0.114);
-    }
-
-    var corners = tracking.Fast.findCorners(grays, width, height, 100);
-
-    for (i = 0; i < corners.length; i = i + 2)
-    {
-        var k = (corners[i] * corners[i + 1] + corners[i]) * 4;
-        pixels[k] = 255;
-        pixels[k + 1] = 192;
-        pixels[k + 2] = 192;
-        pixels[k + 3] = 192;
-    }
-    return pixels;
+    var grays = tracking.Image.grayscale(pixels, width, height);
+    var corners = tracking.Fast.findCorners(grays, width, height, 40);
+    return corners;
 }
 /*
 ** END CORNERS DETECTION
+*/
+
+
+/*
+** BEGIN EDGES DETECTION
+*/
+function edgeDetection(pixels, width, height)
+{
+    var edges = pixels.slice(0);
+    return edges;
+}
+/*
+** END EDGES DETECTION
 */
