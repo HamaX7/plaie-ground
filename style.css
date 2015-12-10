@@ -1,11 +1,20 @@
+html {
+	position: relative;
+	margin: 0;
+	padding: 0;
+	min-height: 100%;
+}
+
 body {
-	background-color: lightgrey;
+	background-color: black;
 }
 
 .origin {
-
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .render {
-
+	margin-left: auto;
+	margin-right: auto;
 }
