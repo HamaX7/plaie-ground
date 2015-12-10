@@ -1,8 +1,8 @@
-var HEIGHT = 400;
+var WIDTH = 400;
 imgProcessing("image-plaie-1", "copie-1", "plaie1.jpg");
 imgProcessing("image-plaie-2", "copie-2", "plaie2.jpg");
 imgProcessing("image-plaie-3", "copie-3", "plaie3.jpg");
-//imgProcessing("image-plaie-4", "copie-4", "plaie4.jpg");
+imgProcessing("image-plaie-4", "copie-4", "plaie4.jpg");
 
 
 
@@ -21,8 +21,8 @@ function imgProcessing(imgName, copyName, fileName)
     imgPlaie.onload = function()
     {
         // Height and width modification
-        imgPlaie.width *= HEIGHT / imgPlaie.height;
-        imgPlaie.height = HEIGHT;
+        imgPlaie.height *= WIDTH / imgPlaie.width;
+        imgPlaie.width = WIDTH;
 
         // Image without modificiation: display
         ctx.clearRect(0, 0, c.width, c.height);
