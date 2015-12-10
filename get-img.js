@@ -3,8 +3,8 @@ imgProcessing("image-plaie-1", "copie-1", "img/plaie1.jpg");
 imgProcessing("image-plaie-2", "copie-2", "img/plaie2.jpg");
 imgProcessing("image-plaie-3", "copie-3", "img/plaie3.jpg");
 imgProcessing("image-plaie-4", "copie-4", "img/plaie4.jpg");
-
-
+imgProcessing("image-plaie-5", "copie-5", "img/plaie5.jpg");
+imgProcessing("image-plaie-6", "copie-6", "img/plaie6.jpg");
 
 /*
 ** BEGIN IMAGE PROCESSING
@@ -38,7 +38,12 @@ function imgProcessing(imgName, copyName, fileName)
         pixels = pixelsColorProcessing(pixels, copie_imgPlaie.width);
 
         // Corners detection on copy
-        pixels = cornerDetection(pixels, copie_imgPlaie.width, copie_imgPlaie.height);
+        var corners = cornerDetection(pixels, copie_imgPlaie.width, copie_imgPlaie.height);
+
+        // Edges detection on copy
+        var edges = edgeDetection(pixels, copie_imgPlaie.width, copie_imgPlaie.height);
+
+        pixels = edges;
 
         // Set copy pixels with new pixels
         copie_imgPlaie.data = pixels;
@@ -49,6 +54,12 @@ function imgProcessing(imgName, copyName, fileName)
         copie.height = imgPlaie.height;
         var ctxCopie = copie.getContext("2d");
     	ctxCopie.putImageData(copie_imgPlaie, 0, 0);
+
+        // Print corners pixels
+        /*for (var i = 0; i < corners.length; i += 2) {
+            ctxCopie.fillStyle = '#61F600';
+            ctxCopie.fillRect(corners[i], corners[i + 1], 1, 1);
+        }*/
     }
 };
 /*
@@ -189,26 +200,23 @@ function pixelsColorProcessing(pixels, width)
 */
 function cornerDetection(pixels, width, height)
 {
-    var grays = new Array();
-
-    // Avoir un tableau des valeurs grayscale de chaque pixel
-    for (i = 0; i < pixels.length; i = i + 4)
-    {
-        grays.push(pixels[i] * 0.299 + pixels[i + 1] * 0.587 + pixels[i + 2] * 0.114);
-    }
-
-    var corners = tracking.Fast.findCorners(grays, width, height, 100);
-
-    for (i = 0; i < corners.length; i = i + 2)
-    {
-        var k = (corners[i] * corners[i + 1] + corners[i]) * 4;
-        pixels[k] = 255;
-        pixels[k + 1] = 192;
-        pixels[k + 2] = 192;
-        pixels[k + 3] = 192;
-    }
-    return pixels;
+    var grays = tracking.Image.grayscale(pixels, width, height);
+    var corners = tracking.Fast.findCorners(grays, width, height, 40);
+    return corners;
 }
 /*
 ** END CORNERS DETECTION
+*/
+
+
+/*
+** BEGIN EDGES DETECTION
+*/
+function edgeDetection(pixels, width, height)
+{
+    var edges = pixels.slice(0);
+    return edges;
+}
+/*
+** END EDGES DETECTION
 */
