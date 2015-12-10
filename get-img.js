@@ -1,8 +1,8 @@
 var WIDTH = 400;
-imgProcessing("image-plaie-1", "copie-1", "plaie1.jpg");
-imgProcessing("image-plaie-2", "copie-2", "plaie2.jpg");
-imgProcessing("image-plaie-3", "copie-3", "plaie3.jpg");
-imgProcessing("image-plaie-4", "copie-4", "plaie4.jpg");
+imgProcessing("image-plaie-1", "copie-1", "img/plaie1.jpg");
+imgProcessing("image-plaie-2", "copie-2", "img/plaie2.jpg");
+imgProcessing("image-plaie-3", "copie-3", "img/plaie3.jpg");
+imgProcessing("image-plaie-4", "copie-4", "img/plaie4.jpg");
 
 
 
