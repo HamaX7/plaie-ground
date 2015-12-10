@@ -81,7 +81,7 @@ imgPlaie.onload = function(){
             pixels[i+2] = 0;
             pixels[i+3] = 255;
         }
-        else if (pixels[i] == 0 && color_sum > 3000) //here is the value to change for a different noise reduction strength -3060 = 50%
+        else if (pixels[i] == 0 && color_sum > 3060) //here is the value to change for a different noise reduction strength -3060 = 50%
         {
             pixels[i] = 255;
             pixels[i+1] = 0;
@@ -89,50 +89,53 @@ imgPlaie.onload = function(){
             pixels[i+3] = 255;
         }
     }
-    //basic Noise reduction for blue
-    for (i = 2; i < pixels.length; i = i + 4)
+    for (var z = 0; z < 15; z++)
     {
-        color_sum = pixels[i - 4]
-                    + pixels[i + 4]
-                    + pixels[i - 8]
-                    + pixels[i + 8]
-                    + pixels[i - (4 * copie_imgPlaie.width)]
-                    + pixels[i + (4 * copie_imgPlaie.width)]
-                    + pixels[i - (4 * copie_imgPlaie.width) - 4]
-                    + pixels[i - (4 * copie_imgPlaie.width) + 4]
-                    + pixels[i - (4 * copie_imgPlaie.width) - 8]
-                    + pixels[i - (4 * copie_imgPlaie.width) + 8]
-                    + pixels[i + (4 * copie_imgPlaie.width) - 4]
-                    + pixels[i + (4 * copie_imgPlaie.width) + 4]
-                    + pixels[i + (4 * copie_imgPlaie.width) - 8]
-                    + pixels[i + (4 * copie_imgPlaie.width) + 8]
-                    + pixels[i - (4 * 2 * copie_imgPlaie.width)]
-                    + pixels[i - (4 * 2 * copie_imgPlaie.width) - 4]
-                    + pixels[i - (4 * 2 * copie_imgPlaie.width) + 4]
-                    + pixels[i - (4 * 2 * copie_imgPlaie.width) - 8]
-                    + pixels[i - (4 * 2 * copie_imgPlaie.width) + 8]
-                    + pixels[i + (4 * 2 * copie_imgPlaie.width)]
-                    + pixels[i + (4 * 2 * copie_imgPlaie.width) - 4]
-                    + pixels[i + (4 * 2 * copie_imgPlaie.width) + 4]
-                    + pixels[i + (4 * 2 * copie_imgPlaie.width) - 8]
-                    + pixels[i + (4 * 2 * copie_imgPlaie.width) + 8];
-        if (pixels[i] == 255 && color_sum < 800) //here is the value to change for a different noise reduction strength
+        //basic Noise reduction for blue
+        for (i = 2; i < pixels.length; i = i + 4)
         {
-            i = i - 2;
-            pixels[i] = 0;
-            pixels[i+1] = 0;
-            pixels[i+2] = 0;
-            pixels[i+3] = 255;
-            i = i + 2;
-        }
-        else if (pixels[i] == 0 && color_sum > 3000) //here is the value to change for a different noise reduction strength -3060
-        {
-            i = i - 2;
-            pixels[i] = 0;
-            pixels[i+1] = 0;
-            pixels[i+2] = 255;
-            pixels[i+3] = 255;
-            i = i + 2;
+            color_sum = pixels[i - 4]
+                        + pixels[i + 4]
+                        + pixels[i - 8]
+                        + pixels[i + 8]
+                        + pixels[i - (4 * copie_imgPlaie.width)]
+                        + pixels[i + (4 * copie_imgPlaie.width)]
+                        + pixels[i - (4 * copie_imgPlaie.width) - 4]
+                        + pixels[i - (4 * copie_imgPlaie.width) + 4]
+                        + pixels[i - (4 * copie_imgPlaie.width) - 8]
+                        + pixels[i - (4 * copie_imgPlaie.width) + 8]
+                        + pixels[i + (4 * copie_imgPlaie.width) - 4]
+                        + pixels[i + (4 * copie_imgPlaie.width) + 4]
+                        + pixels[i + (4 * copie_imgPlaie.width) - 8]
+                        + pixels[i + (4 * copie_imgPlaie.width) + 8]
+                        + pixels[i - (4 * 2 * copie_imgPlaie.width)]
+                        + pixels[i - (4 * 2 * copie_imgPlaie.width) - 4]
+                        + pixels[i - (4 * 2 * copie_imgPlaie.width) + 4]
+                        + pixels[i - (4 * 2 * copie_imgPlaie.width) - 8]
+                        + pixels[i - (4 * 2 * copie_imgPlaie.width) + 8]
+                        + pixels[i + (4 * 2 * copie_imgPlaie.width)]
+                        + pixels[i + (4 * 2 * copie_imgPlaie.width) - 4]
+                        + pixels[i + (4 * 2 * copie_imgPlaie.width) + 4]
+                        + pixels[i + (4 * 2 * copie_imgPlaie.width) - 8]
+                        + pixels[i + (4 * 2 * copie_imgPlaie.width) + 8];
+            if (pixels[i] == 255 && color_sum < 800) //here is the value to change for a different noise reduction strength
+            {
+                i = i - 2;
+                pixels[i] = 0;
+                pixels[i+1] = 0;
+                pixels[i+2] = 0;
+                pixels[i+3] = 255;
+                i = i + 2;
+            }
+            else if (pixels[i] == 0 && color_sum > 3060) //here is the value to change for a different noise reduction strength -3060 = 50%
+            {
+                i = i - 2;
+                pixels[i] = 0;
+                pixels[i+1] = 0;
+                pixels[i+2] = 255;
+                pixels[i+3] = 255;
+                i = i + 2;
+            }
         }
     }
 
