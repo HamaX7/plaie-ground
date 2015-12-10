@@ -1,4 +1,4 @@
-var WIDTH = 400;
+var WIDTH = 300;
 imgProcessing("image-plaie-1", "copie-1", "img/plaie1.jpg");
 imgProcessing("image-plaie-2", "copie-2", "img/plaie2.jpg");
 imgProcessing("image-plaie-3", "copie-3", "img/plaie3.jpg");
@@ -61,9 +61,13 @@ function imgProcessing(imgName, copyName, fileName)
 */
 function pixelsColorProcessing(pixels, width)
 {
+    var sat = 0;
+    var cpt = 0;
     for (i = 0; i < pixels.length; i = i + 4)
     {
         var hsv = rgbToHsv(pixels[i], pixels[i + 1], pixels[i + 2]);
+        cpt++;
+        sat = sat + hsv['s'];
         if (hsv['h'] > 0.44 && hsv['h'] < 0.58
         && hsv['s'] > 0.10 && hsv['s'] < 0.90
         && hsv['v'] > 0.05 && hsv['v'] < 0.98)
@@ -90,6 +94,9 @@ function pixelsColorProcessing(pixels, width)
             pixels[i+3] = 255;
         }
     }
+    sat = sat / cpt;
+    console.log("saturation image:")
+    console.log(sat);
     for (var z = 0; z < 10; z++)
     {
         // Basic noise reduction for red
@@ -119,7 +126,7 @@ function pixelsColorProcessing(pixels, width)
                             + pixels[i + (4 * 2 * width) + 4]
                             + pixels[i + (4 * 2 * width) - 8]
                             + pixels[i + (4 * 2 * width) + 8];
-            if (pixels[i] == 255 && color_sum < 1400) //here is the value to change for a different noise reduction strength
+            if (pixels[i] == 255 && color_sum < 800) //here is the value to change for a different noise reduction strength
             {
                 pixels[i] = 0;
                 pixels[i+1] = 0;
