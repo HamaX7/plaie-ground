@@ -3,27 +3,48 @@
 <head>
     <meta charset="utf-8">
     <title>Plaie Ground</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
 </head>
 
 <body>
-    <div>
-        <canvas id="image-plaie-1"></canvas>
-        <canvas id="copie-1"></canvas><br/>
-
-        <canvas id="image-plaie-2"></canvas>
-        <canvas id="copie-2"></canvas><br/>
-
-        <canvas id="image-plaie-3"></canvas>
-        <canvas id="copie-3"></canvas><br/>
-
-        <canvas id="image-plaie-4"></canvas>
-        <canvas id="copie-4"></canvas><br/>
-
-        <canvas id="image-plaie-5"></canvas>
-        <canvas id="copie-5"></canvas><br/>
-
-        <canvas id="image-plaie-6"></canvas>
-        <canvas id="copie-6"></canvas>
+    <div id="all-images" class="container-fluid" data-ride="">
+        <div class="row">
+            <div class="col-sm-6">
+                <canvas id="image-plaie-1" class="origin"></canvas></div>
+            <div class="col-sm-6">
+                <canvas id="copie-1" class="render"></canvas></div><br/>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <canvas id="image-plaie-2" class="origin"></canvas></div>
+            <div class="col-sm-6">
+                <canvas id="copie-2" class="render"></canvas></div><br/>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <canvas id="image-plaie-3" class="origin"></canvas></div>
+            <div class="col-sm-6">
+                <canvas id="copie-3" class="render"></canvas></div><br/>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <canvas id="image-plaie-4" class="origin"></canvas></div>
+            <div class="col-sm-6">
+                <canvas id="copie-4" class="render"></canvas></div><br/>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <canvas id="image-plaie-5" class="origin"></canvas></div>
+            <div class="col-sm-6">
+                <canvas id="copie-5" class="render"></canvas></div><br/>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <canvas id="image-plaie-6" class="origin"></canvas></div>
+            <div class="col-sm-6">
+                <canvas id="copie-6" class="render"></canvas></div>
+        </div>
     </div>
 
 
@@ -31,6 +52,7 @@
         <script src="assets/jquery/jquery.min.js"></script>
         <script src="assets/tracking/build/tracking-min.js"></script>
         <script src="conversionRgbToHsv.js"></script>
+        <script src="js/bootstrap.min.js"></script>
         <script type="text/javascript" src="get-img.js"></script>
     </footer>
 </body>

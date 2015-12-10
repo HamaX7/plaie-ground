@@ -1,4 +1,4 @@
-var WIDTH = 400;
+var WIDTH = 300;
 imgProcessing("image-plaie-1", "copie-1", "img/plaie1.jpg");
 imgProcessing("image-plaie-2", "copie-2", "img/plaie2.jpg");
 imgProcessing("image-plaie-3", "copie-3", "img/plaie3.jpg");
@@ -31,8 +31,8 @@ function imgProcessing(imgName, copyName, fileName)
         ctx.drawImage(imgPlaie, 0, 0, imgPlaie.width, imgPlaie.height);
 
         // Copy of initial image data
-    	var copie_imgPlaie = ctx.getImageData( 0, 0, imgPlaie.width, imgPlaie.height);
-    	var pixels = copie_imgPlaie.data;
+        var copie_imgPlaie = ctx.getImageData( 0, 0, imgPlaie.width, imgPlaie.height);
+        var pixels = copie_imgPlaie.data;
 
         // Color processing on copy
         pixels = pixelsColorProcessing(pixels, copie_imgPlaie.width);
@@ -72,12 +72,16 @@ function imgProcessing(imgName, copyName, fileName)
 */
 function pixelsColorProcessing(pixels, width)
 {
+    var sat = 0;
+    var cpt = 0;
     for (i = 0; i < pixels.length; i = i + 4)
     {
         var hsv = rgbToHsv(pixels[i], pixels[i + 1], pixels[i + 2]);
-        if (hsv['h'] > 0.44 && hsv['h'] < 0.55
+        cpt++;
+        sat = sat + hsv['s'];
+        if (hsv['h'] > 0.44 && hsv['h'] < 0.58
         && hsv['s'] > 0.10 && hsv['s'] < 0.90
-        && hsv['v'] > 0.10 && hsv['v'] < 0.90)
+        && hsv['v'] > 0.05 && hsv['v'] < 0.98)
         {
             pixels[i] = 0;
             pixels[i+1] = 0;
@@ -85,7 +89,7 @@ function pixelsColorProcessing(pixels, width)
             pixels[i+3] = 255;
         }
         else if ((hsv['h'] < 0.025 || hsv['h'] > 0.95)
-            && hsv['s'] > 0.56 && hsv['s'] < 0.95
+            && hsv['s'] > 0.5 && hsv['s'] < 0.95
             && hsv['v'] > 0.15 && hsv['v'] < 0.95) //s = 0.56 pour plaie ouverte, 0.4 pour supurante
         {
             pixels[i] = 255;
@@ -101,10 +105,57 @@ function pixelsColorProcessing(pixels, width)
             pixels[i+3] = 255;
         }
     }
-    // Basic noise reduction for red
-    for (i = 0; i < pixels.length; i = i + 4)
+    sat = sat / cpt;
+    console.log("saturation image:")
+    console.log(sat);
+    for (var z = 0; z < 10; z++)
     {
-        var color_sum = pixels[i - 4]
+        // Basic noise reduction for red
+        for (i = 0; i < pixels.length; i = i + 4)
+        {
+            var color_sum = pixels[i - 4]
+                            + pixels[i + 4]
+                            + pixels[i - 8]
+                            + pixels[i + 8]
+                            + pixels[i - (4 * width)]
+                            + pixels[i + (4 * width)]
+                            + pixels[i - (4 * width) - 4]
+                            + pixels[i - (4 * width) + 4]
+                            + pixels[i - (4 * width) - 8]
+                            + pixels[i - (4 * width) + 8]
+                            + pixels[i + (4 * width) - 4]
+                            + pixels[i + (4 * width) + 4]
+                            + pixels[i + (4 * width) - 8]
+                            + pixels[i + (4 * width) + 8]
+                            + pixels[i - (4 * 2 * width)]
+                            + pixels[i - (4 * 2 * width) - 4]
+                            + pixels[i - (4 * 2 * width) + 4]
+                            + pixels[i - (4 * 2 * width) - 8]
+                            + pixels[i - (4 * 2 * width) + 8]
+                            + pixels[i + (4 * 2 * width)]
+                            + pixels[i + (4 * 2 * width) - 4]
+                            + pixels[i + (4 * 2 * width) + 4]
+                            + pixels[i + (4 * 2 * width) - 8]
+                            + pixels[i + (4 * 2 * width) + 8];
+            if (pixels[i] == 255 && color_sum < 800) //here is the value to change for a different noise reduction strength
+            {
+                pixels[i] = 0;
+                pixels[i+1] = 0;
+                pixels[i+2] = 0;
+                pixels[i+3] = 255;
+            }
+            else if (pixels[i] == 0 && color_sum > 3060) //here is the value to change for a different noise reduction strength -3060 = 50%
+            {
+                pixels[i] = 255;
+                pixels[i+1] = 0;
+                pixels[i+2] = 0;
+                pixels[i+3] = 255;
+            }
+        }
+        // Basic noise reduction for blue
+        for (i = 2; i < pixels.length; i = i + 4)
+        {
+            color_sum = pixels[i - 4]
                         + pixels[i + 4]
                         + pixels[i - 8]
                         + pixels[i + 8]
@@ -128,65 +179,24 @@ function pixelsColorProcessing(pixels, width)
                         + pixels[i + (4 * 2 * width) + 4]
                         + pixels[i + (4 * 2 * width) - 8]
                         + pixels[i + (4 * 2 * width) + 8];
-        if (pixels[i] == 255 && color_sum < 1400) //here is the value to change for a different noise reduction strength
-        {
-            pixels[i] = 0;
-            pixels[i+1] = 0;
-            pixels[i+2] = 0;
-            pixels[i+3] = 255;
-        }
-        else if (pixels[i] == 0 && color_sum > 3000) //here is the value to change for a different noise reduction strength -3060 = 50%
-        {
-            pixels[i] = 255;
-            pixels[i+1] = 0;
-            pixels[i+2] = 0;
-            pixels[i+3] = 255;
-        }
-    }
-    // Basic noise reduction for blue
-    for (i = 2; i < pixels.length; i = i + 4)
-    {
-        color_sum = pixels[i - 4]
-                    + pixels[i + 4]
-                    + pixels[i - 8]
-                    + pixels[i + 8]
-                    + pixels[i - (4 * width)]
-                    + pixels[i + (4 * width)]
-                    + pixels[i - (4 * width) - 4]
-                    + pixels[i - (4 * width) + 4]
-                    + pixels[i - (4 * width) - 8]
-                    + pixels[i - (4 * width) + 8]
-                    + pixels[i + (4 * width) - 4]
-                    + pixels[i + (4 * width) + 4]
-                    + pixels[i + (4 * width) - 8]
-                    + pixels[i + (4 * width) + 8]
-                    + pixels[i - (4 * 2 * width)]
-                    + pixels[i - (4 * 2 * width) - 4]
-                    + pixels[i - (4 * 2 * width) + 4]
-                    + pixels[i - (4 * 2 * width) - 8]
-                    + pixels[i - (4 * 2 * width) + 8]
-                    + pixels[i + (4 * 2 * width)]
-                    + pixels[i + (4 * 2 * width) - 4]
-                    + pixels[i + (4 * 2 * width) + 4]
-                    + pixels[i + (4 * 2 * width) - 8]
-                    + pixels[i + (4 * 2 * width) + 8];
-        if (pixels[i] == 255 && color_sum < 800) //here is the value to change for a different noise reduction strength
-        {
-            i = i - 2;
-            pixels[i] = 0;
-            pixels[i+1] = 0;
-            pixels[i+2] = 0;
-            pixels[i+3] = 255;
-            i = i + 2;
-        }
-        else if (pixels[i] == 0 && color_sum > 3000) //here is the value to change for a different noise reduction strength -3060
-        {
-            i = i - 2;
-            pixels[i] = 0;
-            pixels[i+1] = 0;
-            pixels[i+2] = 255;
-            pixels[i+3] = 255;
-            i = i + 2;
+            if (pixels[i] == 255 && color_sum < 800) //here is the value to change for a different noise reduction strength
+            {
+                i = i - 2;
+                pixels[i] = 0;
+                pixels[i+1] = 0;
+                pixels[i+2] = 0;
+                pixels[i+3] = 255;
+                i = i + 2;
+            }
+            else if (pixels[i] == 0 && color_sum > 3060) //here is the value to change for a different noise reduction strength -3060
+            {
+                i = i - 2;
+                pixels[i] = 0;
+                pixels[i+1] = 0;
+                pixels[i+2] = 255;
+                pixels[i+3] = 255;
+                i = i + 2;
+            }
         }
     }
     return (pixels);
@@ -218,5 +228,6 @@ function edgeDetection(pixels, width, height)
     return edges;
 }
 /*
+<<<<<<< HEAD
 ** END EDGES DETECTION
 */
