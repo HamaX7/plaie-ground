@@ -18,6 +18,7 @@ function imgProcessing(imgName, copyName, fileName)
     var imgPlaie = new Image();
     imgPlaie.src = fileName;
 
+
     // Image processing onload
     imgPlaie.onload = function()
     {
@@ -32,7 +33,7 @@ function imgProcessing(imgName, copyName, fileName)
         ctx.drawImage(imgPlaie, 0, 0, imgPlaie.width, imgPlaie.height);
 
         // Copy of initial image data
-        var copie_imgPlaie = ctx.getImageData( 0, 0, imgPlaie.width, imgPlaie.height);
+        var copie_imgPlaie = ctx.getImageData(0, 0, imgPlaie.width, imgPlaie.height);
         var pixels = copie_imgPlaie.data;
 
         // Color processing on copy
@@ -76,40 +77,51 @@ function pixelsColorProcessing(pixels, width)
     var height = (pixels.length / 4) / width;
     var sat = 0;
     var cpt = 0;
+
+    var medCoor = {i:0, j:0};
+    var nbRed = 0;
+
     for (i = 0; i < pixels.length; i = i + 4)
     {
         var hsv = rgbToHsv(pixels[i], pixels[i + 1], pixels[i + 2]);
         cpt++;
         sat = sat + hsv['s'];
-        if (hsv['h'] > 0.44 && hsv['h'] < 0.58
-        && hsv['s'] > 0.10 && hsv['s'] < 0.90
-        && hsv['v'] > 0.05 && hsv['v'] < 0.98)
+        if (hsv['h'] > 0.44 && hsv['h'] < 0.55
+        && hsv['s'] > 0.15 && hsv['s'] < 0.90
+        && hsv['v'] > 0.15 && hsv['v'] < 0.90)
         {
             pixels[i] = 0;
-            pixels[i+1] = 0;
-            pixels[i+2] = 255;
-            pixels[i+3] = 255;
+            pixels[i + 1] = 0;
+            pixels[i + 2] = 255;
+            pixels[i + 3] = 255;
         }
         else if ((hsv['h'] < 0.025 || hsv['h'] > 0.95)
             && hsv['s'] > 0.5 && hsv['s'] < 0.95
             && hsv['v'] > 0.15 && hsv['v'] < 0.95) //s = 0.56 pour plaie ouverte, 0.4 pour supurante
         {
             pixels[i] = 255;
-            pixels[i+1] = 0;
-            pixels[i+2] = 0;
-            pixels[i+3] = 255;
+            pixels[i + 1] = 0;
+            pixels[i + 2] = 0;
+            pixels[i + 3] = 255;
+            if (i != 0)
+            {
+                medCoor.j += ((i / 4) % width);
+                medCoor.i += Math.round((i / 4) / width);
+            }
+            nbRed++;
         }
         else
         {
             pixels[i] = 0;
-            pixels[i+1] = 0;
-            pixels[i+2] = 0;
-            pixels[i+3] = 0;
+            pixels[i + 1] = 0;
+            pixels[i + 2] = 0;
+            pixels[i + 3] = 0;
         }
     }
+
     sat = sat / cpt;
     console.log("Saturation:" + sat);
-    for (var z = 0; z < 10; z++)
+    for (var z = 0; z < 20; z++)
     {
         // Basic noise reduction for red
         for (i = 0; i < pixels.length; i = i + 4)
@@ -141,16 +153,16 @@ function pixelsColorProcessing(pixels, width)
             if (pixels[i] == 255 && color_sum < 800) //here is the value to change for a different noise reduction strength
             {
                 pixels[i] = 0;
-                pixels[i+1] = 0;
-                pixels[i+2] = 0;
-                pixels[i+3] = 0;
+                pixels[i + 1] = 0;
+                pixels[i + 2] = 0;
+                pixels[i + 3] = 0;
             }
             else if (pixels[i] == 0 && color_sum > 3060) //here is the value to change for a different noise reduction strength -3060 = 50%
             {
                 pixels[i] = 255;
-                pixels[i+1] = 0;
-                pixels[i+2] = 0;
-                pixels[i+3] = 255;
+                pixels[i + 1] = 0;
+                pixels[i + 2] = 0;
+                pixels[i + 3] = 255;
             }
         }
         // Basic noise reduction for blue
@@ -184,18 +196,18 @@ function pixelsColorProcessing(pixels, width)
             {
                 i = i - 2;
                 pixels[i] = 0;
-                pixels[i+1] = 0;
-                pixels[i+2] = 0;
-                pixels[i+3] = 0;
+                pixels[i + 1] = 0;
+                pixels[i + 2] = 0;
+                pixels[i + 3] = 0;
                 i = i + 2;
             }
             else if (pixels[i] == 0 && color_sum > 3060) //here is the value to change for a different noise reduction strength -3060
             {
                 i = i - 2;
                 pixels[i] = 0;
-                pixels[i+1] = 0;
-                pixels[i+2] = 255;
-                pixels[i+3] = 255;
+                pixels[i + 1] = 0;
+                pixels[i + 2] = 255;
+                pixels[i + 3] = 255;
                 i = i + 2;
             }
         }
@@ -242,9 +254,9 @@ function pixelsColorProcessing(pixels, width)
                 if (setToGreen == 1)
                 {
                     pixels[k] = 0;
-                    pixels[k+1] = 255;
-                    pixels[k+2] = 0;
-                    pixels[k+3] = 255;
+                    pixels[k + 1] = 255;
+                    pixels[k + 2] = 0;
+                    pixels[k + 3] = 255;
                 }
             }
         }
@@ -253,7 +265,7 @@ function pixelsColorProcessing(pixels, width)
     var countBlue = 0;
     for (i = 0; i < pixels.length; i = i + 4)
     {
-        if (pixels[i] == 0 && pixels[i+1] == 0 && pixels[i+2] == 255)
+        if (pixels[i] == 0 && pixels[i + 1] == 0 && pixels[i + 2] == 255)
         {
         countBlue = countBlue + 1;
         }
@@ -261,7 +273,7 @@ function pixelsColorProcessing(pixels, width)
     var countRed = 0;
     for (i = 0; i < pixels.length; i = i + 4)
     {
-        if (pixels[i] == 255 && pixels[i+1] == 0 && pixels[i+2] == 0)
+        if (pixels[i] == 255 && pixels[i + 1] == 0 && pixels[i + 2] == 0)
         {
         countRed = countRed + 1;
         }
@@ -271,6 +283,24 @@ function pixelsColorProcessing(pixels, width)
 
     var tailleplaie = (countRed / countBlue) * 4;
     console.log('La plaie fait ' + tailleplaie +' cm²');
+
+
+
+    var c_i = Math.round(medCoor.i / nbRed);
+    var c_j = Math.round(medCoor.j / nbRed);
+    console.log("===== coordonnne moyenne =====")
+    console.log(c_i);
+    console.log(c_j);
+
+    var coorIndex = (c_j * 4) + (c_i * 4) * width;
+    coorIndex = Math.round(coorIndex);
+    console.log(coorIndex);
+
+    pixels[coorIndex] = 255;
+    pixels[coorIndex + 1] = 255;
+    pixels[coorIndex + 2] = 255;
+    pixels[coorIndex + 3] = 255;
+
     return (pixels);
 };
 /*
