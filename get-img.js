@@ -36,16 +36,13 @@ function imgProcessing(imgName, copyName, fileName)
         var pixels = copie_imgPlaie.data;
 
         // Color processing on copy
-        pixels = pixelsColorProcessing(pixels, copie_imgPlaie.width);
+        pixelsColorProcessing(pixels, copie_imgPlaie.width);
 
         // Corners detection on copy
         var corners = cornerDetection(pixels, copie_imgPlaie.width, copie_imgPlaie.height);
 
         // Paint bucket
-        paintBucket(pixels, copie_imgPlaie.width, copie_imgPlaie.height)
-
-        // Set copy pixels with new pixels
-        copie_imgPlaie.data = pixels;
+        paintBucket(pixels, copie_imgPlaie.width, copie_imgPlaie.height, 0, 0);
 
         // Image copy: display
         var copie = document.getElementById(copyName);
@@ -291,9 +288,9 @@ function cornerDetection(pixels, width, height)
 /*
 ** BEGIN BLACK TO WHITE
 */
-function paintBucket(pixels, width, height)
+function paintBucket(pixels, width, height, xstart, ystart)
 {
-    var pixelStack = [[0, 0]];
+    var pixelStack = [[xstart, ystart]];
 
     while (pixelStack.length)
     {
@@ -348,6 +345,10 @@ function paintBucket(pixels, width, height)
         pixelPos += width * 4;
       }
     }
+    pixels[(ystart * width + xstart) * 4] = 255;
+    pixels[(ystart * width + xstart) * 4 + 1] = 255;
+    pixels[(ystart * width + xstart) * 4 + 2] = 0;
+    pixels[(ystart * width + xstart) * 4 + 3] = 255;
 
     // Black to red
     for (i = 0; i < pixels.length; i = i + 4)
