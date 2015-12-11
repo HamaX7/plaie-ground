@@ -198,7 +198,7 @@ function pixelsColorProcessing(pixels, width)
             }
         }
 
-        console.log("### width = " + width + " ### height = " + height);
+        /*console.log("### width = " + width + " ### height = " + height);
         for (i = 0; i < height; i++)
         {
             for (j = 0; j < (width * 4); j = j + 4)
@@ -245,7 +245,7 @@ function pixelsColorProcessing(pixels, width)
                     pixels[k+3] = 255;
                 }
             }
-        }
+        }*/
     }
 
     var countBlue = 0;
@@ -347,6 +347,18 @@ function paintBucket(pixels, width, height)
         }
         pixelPos += width * 4;
       }
+    }
+
+    // Black to red
+    for (i = 0; i < pixels.length; i = i + 4)
+    {
+        if (pixels[i] + pixels[i + 1] + pixels[i + 2] == 0)
+        {
+            pixels[i] = 255;
+            pixels[i + 1] = 0;
+            pixels[i + 2] = 0;
+            pixels[i + 3] = 255;
+        }
     }
 
     function matchStartColor(pixels, pixelPos)
