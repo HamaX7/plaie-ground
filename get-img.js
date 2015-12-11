@@ -340,7 +340,7 @@ function squareDetection(pixels, width, height)
 
     function radiation(pixels, p)
     {
-        if (isBlue(pixels, p + 4))
+        
     }
 
     function isBlue(pixels, p)
