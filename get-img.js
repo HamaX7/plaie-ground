@@ -311,51 +311,7 @@ function edgeDetection(pixels, width, height)
 */
 function squareDetection(pixels, width, height)
 {
-    var top = {x:0, y:0, i:0};
-    var bottom = {x:0, y:0, i:0};
-    var right = {x:0, y:0, i:0};
-    var left = {x:0, y:0, i:0};
-
-    for (i = 0; i < height; i = i + 4)
-    {
-        for (j = 0; j < width; j = j + 4)
-        {
-            if (isBlue(pixels, (i * width) + j))
-            {
-                if (i > top.x)
-                {
-                    top.x = i;
-                    top.y = j;
-                    top.i = (i * width) + j;
-
-                }
-            }
-        }
-    }
-
-    function recursive(pixels, p)
-    {
-
-    }
-
-    function radiation(pixels, p)
-    {
-        
-    }
-
-    function isBlue(pixels, p)
-    {
-        if (pixels[p] == 0 &&
-            pixels[p + 1] == 0 &&
-            pixels[p + 2] == 255)
-        {
-            return (true);
-        }
-        else
-        {
-            return (false);
-        }
-    }
+    
 }
 /*
 ** END SQUARE DETECTION
