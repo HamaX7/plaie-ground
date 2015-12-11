@@ -11,6 +11,7 @@ imgProcessing("image-plaie-6", "copie-6", "img/plaie6.jpg");
 */
 function imgProcessing(imgName, copyName, fileName)
 {
+    console.log("processing " + imgName);
     // Image and canvas initialization
     var c = document.getElementById(imgName);
     var ctx = c.getContext("2d");
@@ -74,6 +75,7 @@ function imgProcessing(imgName, copyName, fileName)
 */
 function pixelsColorProcessing(pixels, width)
 {
+    var height = (pixels.length / 4) / width;
     var sat = 0;
     var cpt = 0;
     for (i = 0; i < pixels.length; i = i + 4)
@@ -104,12 +106,11 @@ function pixelsColorProcessing(pixels, width)
             pixels[i] = 0;
             pixels[i+1] = 0;
             pixels[i+2] = 0;
-            pixels[i+3] = 255;
+            pixels[i+3] = 0;
         }
     }
     sat = sat / cpt;
-    console.log("saturation image:")
-    console.log(sat);
+    console.log("Saturation:" + sat);
     for (var z = 0; z < 10; z++)
     {
         // Basic noise reduction for red
@@ -144,7 +145,7 @@ function pixelsColorProcessing(pixels, width)
                 pixels[i] = 0;
                 pixels[i+1] = 0;
                 pixels[i+2] = 0;
-                pixels[i+3] = 255;
+                pixels[i+3] = 0;
             }
             else if (pixels[i] == 0 && color_sum > 3060) //here is the value to change for a different noise reduction strength -3060 = 50%
             {
@@ -187,7 +188,7 @@ function pixelsColorProcessing(pixels, width)
                 pixels[i] = 0;
                 pixels[i+1] = 0;
                 pixels[i+2] = 0;
-                pixels[i+3] = 255;
+                pixels[i+3] = 0;
                 i = i + 2;
             }
             else if (pixels[i] == 0 && color_sum > 3060) //here is the value to change for a different noise reduction strength -3060
@@ -200,7 +201,78 @@ function pixelsColorProcessing(pixels, width)
                 i = i + 2;
             }
         }
+
+        console.log("### width = " + width + " ### height = " + height);
+        for (i = 0; i < height; i++)
+        {
+            for (j = 0; j < (width * 4); j = j + 4)
+            {
+                var k = (i * width * 4) + j;
+                var setToGreen = 0;
+
+                if (pixels[k] == 255 &&
+                    (i == 0
+                    || i == (height - 1)
+                    || j == 0
+                    || j == (width - 1)))
+                {
+                    setToGreen = 1;
+                }
+                else if (pixels[k] == 0)
+                {
+                    if (i == 0 && (pixels[k - 4] + pixels[k + 4] + pixels[k + (4 * width)] + pixels[k + (4 * width) - 4] + pixels[k + (4 * width) + 4]) > 0)
+                    {
+                        setToGreen = 1;
+                    }
+                    else if (i == (height - 1) && (pixels[k - 4] + pixels[k + 4] + pixels[k - (4 * width)] + pixels[k - (4 * width) - 4] + pixels[k - (4 * width) + 4]) > 0)
+                    {
+                        setToGreen = 1;
+                    }
+                    else if (j == 0 && (pixels[k + 4] + pixels[k - (4 * width)] + pixels[k - (4 * width) + 4] + pixels[k + (4 * width)] + pixels[k + (4 * width) + 4]) > 0)
+                    {
+                        setToGreen = 1;
+                    }
+                    else if (j == (width - 1) && (pixels[k - 4] + pixels[k - (4 * width)] + pixels[k - (4 * width) - 4] + pixels[k + (4 * width)] + pixels[k + (4 * width) - 4]) > 0)
+                    {
+                        setToGreen = 1;
+                    }
+                    else if ((pixels[k - 4] + pixels[k + 4] + pixels[k + (4 * width)] + pixels[k - (4 * width)] + pixels[k + (4 * width) - 4] + pixels[k + (4 * width) + 4] + pixels[k - (4 * width) - 4] + pixels[k - (4 * width) + 4]) > 0)
+                    {
+                        setToGreen = 1;
+                    }
+                }
+                if (setToGreen == 1)
+                {
+                    pixels[k] = 0;
+                    pixels[k+1] = 255;
+                    pixels[k+2] = 0;
+                    pixels[k+3] = 255;
+                }
+            }
+        }
     }
+
+    var countBlue = 0;
+    for (i = 0; i < pixels.length; i = i + 4)
+    {
+        if (pixels[i] == 0 && pixels[i+1] == 0 && pixels[i+2] == 255)
+        {
+        countBlue = countBlue + 1;
+        }
+    }
+    var countRed = 0;
+    for (i = 0; i < pixels.length; i = i + 4)
+    {
+        if (pixels[i] == 255 && pixels[i+1] == 0 && pixels[i+2] == 0)
+        {
+        countRed = countRed + 1;
+        }
+    }
+    console.log("Blue : " + countBlue);
+    console.log("Red : " + countRed);
+
+    var tailleplaie = (countRed / countBlue) * 4;
+    console.log('La plaie fait ' + tailleplaie +' cm²');
     return (pixels);
 };
 /*
