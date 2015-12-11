@@ -37,18 +37,13 @@ function imgProcessing(imgName, copyName, fileName)
         var pixels = copie_imgPlaie.data;
 
         // Color processing on copy
-        pixels = pixelsColorProcessing(pixels, copie_imgPlaie.width);
+        pixelsColorProcessing(pixels, copie_imgPlaie.width);
 
         // Corners detection on copy
         var corners = cornerDetection(pixels, copie_imgPlaie.width, copie_imgPlaie.height);
 
-        // Edges detection on copy
-        var edges = edgeDetection(pixels, copie_imgPlaie.width, copie_imgPlaie.height);
-
-        pixels = edges;
-
-        // Set copy pixels with new pixels
-        copie_imgPlaie.data = pixels;
+        // Paint bucket
+        paintBucket(pixels, copie_imgPlaie.width, copie_imgPlaie.height, 0, 0);
 
         // Image copy: display
         var copie = document.getElementById(copyName);
@@ -212,7 +207,7 @@ function pixelsColorProcessing(pixels, width)
             }
         }
 
-        console.log("### width = " + width + " ### height = " + height);
+        /*console.log("### width = " + width + " ### height = " + height);
         for (i = 0; i < height; i++)
         {
             for (j = 0; j < (width * 4); j = j + 4)
@@ -259,7 +254,7 @@ function pixelsColorProcessing(pixels, width)
                     pixels[k + 3] = 255;
                 }
             }
-        }
+        }*/
     }
 
     var countBlue = 0;
@@ -320,15 +315,98 @@ function cornerDetection(pixels, width, height)
 ** END CORNERS DETECTION
 */
 
-
 /*
-** BEGIN EDGES DETECTION
+** BEGIN BLACK TO WHITE
 */
-function edgeDetection(pixels, width, height)
+function paintBucket(pixels, width, height, xstart, ystart)
 {
-    var edges = pixels.slice(0);
-    return edges;
+    var pixelStack = [[xstart, ystart]];
+
+    while (pixelStack.length)
+    {
+      var newPos, x, y, pixelPos, reachLeft, reachRight;
+      newPos = pixelStack.pop();
+      x = newPos[0];
+      y = newPos[1];
+
+      pixelPos = (y * width + x) * 4;
+      while (y-- >= 0 && matchStartColor(pixels, pixelPos))
+      {
+        pixelPos -= width * 4;
+      }
+      pixelPos += width * 4;
+      ++y;
+      reachLeft = false;
+      reachRight = false;
+      while (y++ < height - 1 && matchStartColor(pixels, pixelPos))
+      {
+        colorPixel(pixels, pixelPos);
+
+        if (x > 0)
+        {
+          if (matchStartColor(pixels, pixelPos - 4))
+          {
+            if (!reachLeft)
+            {
+              pixelStack.push([x - 1, y]);
+              reachLeft = true;
+            }
+          }
+          else if (reachLeft)
+          {
+            reachLeft = false;
+          }
+        }
+        if (x < width - 1)
+        {
+          if (matchStartColor(pixels, pixelPos + 4))
+          {
+            if (!reachRight)
+            {
+              pixelStack.push([x + 1, y]);
+              reachRight = true;
+            }
+          }
+          else if (reachRight)
+          {
+            reachRight = false;
+          }
+        }
+        pixelPos += width * 4;
+      }
+    }
+    pixels[(ystart * width + xstart) * 4] = 255;
+    pixels[(ystart * width + xstart) * 4 + 1] = 255;
+    pixels[(ystart * width + xstart) * 4 + 2] = 0;
+    pixels[(ystart * width + xstart) * 4 + 3] = 255;
+
+    // Black to red
+    for (i = 0; i < pixels.length; i = i + 4)
+    {
+        if (pixels[i] + pixels[i + 1] + pixels[i + 2] == 0)
+        {
+            pixels[i] = 255;
+            pixels[i + 1] = 0;
+            pixels[i + 2] = 0;
+            pixels[i + 3] = 255;
+        }
+    }
+
+    function matchStartColor(pixels, pixelPos)
+    {
+      return (pixels[pixelPos] == 0 &&
+            pixels[pixelPos+1] == 0 &&
+            pixels[pixelPos+2] == 0);
+    }
+
+    function colorPixel(pixels, pixelPos)
+    {
+      pixels[pixelPos] = 255;
+      pixels[pixelPos+1] = 255;
+      pixels[pixelPos+2] = 255;
+      pixels[pixelPos+3] = 255;
+    }
 }
 /*
-** END EDGES DETECTION
+** END BLACK TO WHITE
 */
